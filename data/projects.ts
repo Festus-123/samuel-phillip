@@ -1,54 +1,56 @@
-export interface Project {
-  slug: string;
-  title: string;
-  category: string;
-  image: string;
-  scope: string[];
-  description: string;
-  tools: string[];
-}
+import type { Project } from "@/types";
 
+// TODO: placeholder years. Replace each `date` with the real completion date.
 export const PROJECTS: Project[] = [
   {
-    slug: "modern-sports-arena",
-    title: "Modern Sports Arena & Stadium Complex",
-    category: "Structural Steel & Truss Geometry",
+    id: "stadium-complex",
+    title: "Sports Stadium Complex",
+    category: "3D Modeling",
+    date: "2024",
     image: "/stadium.jpg",
-    scope: [
-      "Structural steel framework drafting",
-      "Load distribution modeling",
-      "Roof truss parametric design",
-    ],
+    imageAlt:
+      "Isometric AutoCAD model of a stadium with a green pitch, running track and covered stands",
     description:
-      "Full structural BIM coordination and roof truss engineering for a 45,000-seat sports complex.",
-    tools: ["AutoCAD", "Revit", "Fusion 360"],
+      "An isometric 3D model of a stadium complex: pitch, running track and covered grandstands arranged around a paved plaza.",
+    scope: [
+      "Grandstand and roof massing",
+      "Pitch and running track layout",
+      "Site paving and circulation",
+    ],
+    tools: ["AutoCAD"],
   },
   {
-    slug: "shanghai-skyscraper-tower",
-    title: "Iconic Shanghai Skyscraper Tower",
-    category: "High-Rise Seismic & Facade Architecture",
+    id: "residential-building",
+    title: "Residential Building",
+    category: "3D Modeling",
+    date: "2024",
     image: "/residential.jpg",
-    scope: [
-      "High-rise curtain wall detailing",
-      "Core shaft 3D structural coordination",
-      "Seismic parametric analysis",
-    ],
+    imageAlt:
+      "AutoCAD hidden-line 3D view of a single-storey house with a hip roof, fence and gate",
     description:
-      "Detailed structural core drafting and dynamic lateral wind/seismic resistance modeling.",
-    tools: ["AutoCAD", "SolidWorks", "Revit"],
+      "A 3D model of a single-storey residence with a hip roof, perimeter wall and decorative gate, presented in a hidden-line view.",
+    scope: [
+      "Walls and hip roof modeling",
+      "Window, door and gate detailing",
+      "Perimeter wall and fence",
+    ],
+    tools: ["AutoCAD"],
   },
   {
-    slug: "suspension-bridge-infrastructure",
-    title: "Massive Cable-Stayed Suspension Bridge",
-    category: "Civil Infrastructure & BIM",
+    id: "drawing-set",
+    title: "Two-Storey Building Drawing Set",
+    category: "Technical Drafting",
+    date: "2025",
     image: "/site-plan.jpg",
-    scope: [
-      "Cable-stayed structural assembly",
-      "Concrete pier foundation modeling",
-      "Civil BIM coordination",
-    ],
+    imageAlt:
+      "Dimensioned AutoCAD sheet with floor plans, a site plan and two elevations",
     description:
-      "Precision structural modeling for a 1.2km cable-stayed bridge spanning major marine channels.",
-    tools: ["Autodesk Inventor", "AutoCAD", "Civil 3D"],
+      "A fully dimensioned drawing sheet with ground and first floor plans, a site plan and two elevations.",
+    scope: [
+      "Dimensioned floor plans",
+      "Site plan layout",
+      "Front and rear elevations",
+    ],
+    tools: ["AutoCAD"],
   },
 ];

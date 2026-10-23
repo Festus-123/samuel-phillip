@@ -1,117 +1,143 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Hexagon } from "lucide-react";
+import { WhatsAppIcon } from "@/components/svg/SocialIcons";
+import { NAV_LINKS, SITE } from "@/data/site";
 
-const NAV_LINKS = [
-  { name: "About", href: "#about" },
-  { name: "Works", href: "#works" },
-  { name: "Skillset", href: "#skills" },
-  { name: "Contact", href: "#contact" },
-];
+type Tone = "forest" | "cream" | "bordo";
+
+/** Glass tint and text colors for the navbar, keyed by the section beneath it. */
+const TONES: Record<
+  Tone,
+  { bar: string; text: string; link: string; toggle: string; cta: "solid" | "cream" }
+> = {
+  forest: {
+    bar: "bg-forest/40 border-cream/15",
+    text: "text-cream",
+    link: "text-cream/80 hover:text-cream",
+    toggle: "border-cream/30 text-cream",
+    cta: "solid",
+  },
+  cream: {
+    bar: "bg-cream/50 border-forest/15",
+    text: "text-forest",
+    link: "text-forest/75 hover:text-forest",
+    toggle: "border-forest/30 text-forest",
+    cta: "solid",
+  },
+  bordo: {
+    bar: "bg-bordo/40 border-cream/15",
+    text: "text-cream",
+    link: "text-cream/80 hover:text-cream",
+    toggle: "border-cream/30 text-cream",
+    cta: "cream",
+  },
+};
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [tone, setTone] = useState<Tone>("forest");
+  const [open, setOpen] = useState(false);
 
+  // Match the glass tint to whichever section is currently under the navbar.
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+    const sections = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-nav-tone]"),
+    );
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const y = 36;
+      const hit = sections.find((section) => {
+        const rect = section.getBoundingClientRect();
+        return rect.top <= y && rect.bottom > y;
+      });
+      if (hit) setTone(hit.dataset.navTone as Tone);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
+
+  const t = TONES[tone];
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-neutral-950/80 backdrop-blur-md border-b border-white/10 py-3 shadow-2xl"
-          : "bg-transparent py-5"
-      }`}
+      className={`fixed inset-x-0 top-0 z-50 border-b backdrop-blur-md transition-colors duration-300 ${t.bar} ${t.text}`}
     >
-      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
-        {/* Brand Logo */}
+      <div className="container-page flex h-nav items-center justify-between px-gutter">
         <a
           href="#hero"
-          className="flex items-center gap-2.5 group focus:outline-none"
+          className="font-heading text-xl font-extrabold tracking-tight"
         >
-          <div className="w-9 h-9 rounded-xl bg-neutral-900 border border-white/10 flex items-center justify-center text-cyan-400 group-hover:border-cyan-500/50 group-hover:text-cyan-300 transition-all">
-            <Hexagon className="w-5 h-5" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-heading font-extrabold text-white text-lg tracking-tight leading-none">
-              Phill<span className="text-cyan-400">.</span>Jnr
-            </span>
-            <span className="text-[10px] text-neutral-400 font-medium tracking-wider uppercase mt-0.5">
-              Structural 3D
-            </span>
-          </div>
+          {SITE.name}
+          <span className="opacity-50">.</span>
         </a>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-1 bg-neutral-900/60 border border-white/10 rounded-full px-4 py-1.5 backdrop-blur-md">
+        <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
           {NAV_LINKS.map((link) => (
             <a
-              key={link.name}
+              key={link.href}
               href={link.href}
-              className="px-4 py-1.5 text-xs font-medium text-neutral-300 hover:text-white hover:bg-white/5 rounded-full transition-all"
+              className={`text-sm font-medium transition-colors ${t.link}`}
             >
               {link.name}
             </a>
           ))}
+          <Button asChild variant={t.cta} size="md">
+            <a href={SITE.whatsapp.href} target="_blank" rel="noopener noreferrer">
+              <WhatsAppIcon className="size-4" />
+              Let&apos;s talk
+            </a>
+          </Button>
         </nav>
 
-        {/* Desktop Call To Action */}
-        <div className="hidden md:flex items-center">
-          <Button
-            asChild
-            size="sm"
-            className="bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-white/10 hover:border-white/20 text-xs font-semibold px-4 py-2 rounded-lg transition-all"
-          >
-            <a href="#contact">Hire Specialist</a>
-          </Button>
-        </div>
-
-        {/* Mobile Menu Toggle Button */}
         <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 rounded-lg bg-neutral-900 border border-white/10 text-neutral-300 hover:text-white"
-          aria-label="Toggle navigation menu"
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+          aria-label={open ? "Close menu" : "Open menu"}
+          className={`grid size-10 place-items-center rounded-lg border transition-colors md:hidden ${t.toggle}`}
         >
-          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {open ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
       </div>
 
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-neutral-950/95 border-b border-white/10 backdrop-blur-xl px-6 py-6 flex flex-col gap-4 shadow-2xl">
+      {open && (
+        <nav
+          id="mobile-menu"
+          aria-label="Mobile"
+          className={`flex flex-col gap-1 border-t px-gutter pb-6 pt-3 md:hidden ${t.bar}`}
+        >
           {NAV_LINKS.map((link) => (
             <a
-              key={link.name}
+              key={link.href}
               href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-sm font-medium text-neutral-300 hover:text-cyan-400 py-2 border-b border-white/5 transition-colors"
+              onClick={() => setOpen(false)}
+              className="border-b border-current/10 py-3 text-base font-medium"
             >
               {link.name}
             </a>
           ))}
-          <Button
-            asChild
-            size="sm"
-            className="w-full bg-cyan-500 hover:bg-cyan-400 text-neutral-950 font-bold text-xs py-2.5 mt-2 rounded-lg"
-          >
-            <a href="#contact" onClick={() => setMobileMenuOpen(false)}>
-              Hire Specialist
+          <Button asChild variant={t.cta} className="mt-4">
+            <a href={SITE.whatsapp.href} target="_blank" rel="noopener noreferrer">
+              <WhatsAppIcon className="size-4" />
+              Let&apos;s talk
             </a>
           </Button>
-        </div>
+        </nav>
       )}
     </header>
   );

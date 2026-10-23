@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Samuel Phillip — CAD Designer Portfolio
 
-## Getting Started
+A single-page portfolio for Samuel Phillip, a CAD designer with 5 years of experience. Built with Next.js (App Router), TypeScript, Tailwind CSS v4, GSAP and lucide-react.
 
-First, run the development server:
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # production build
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+app/                 Root layout (fonts, metadata), page, and globals.css (design tokens)
+components/
+  layout/            Navbar, Footer
+  sections/          Hero, About, Works, Skills, Contact
+  svg/               Blueprint grid, corner marks, isometric scene, social icons
+  ui/                Button, SectionHeading
+data/                Site content (site.ts) and projects (projects.ts)
+hooks/useReveal.ts   Scroll-triggered fade-up used by every section
+lib/gsap/gsap.ts    Single place GSAP and ScrollTrigger are registered
+public/              Project images
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Design tokens
 
-## Learn More
+All colors, fonts and spacing are defined once in `app/globals.css` under `@theme` and used as Tailwind classes. Nothing is hardcoded in components.
 
-To learn more about Next.js, take a look at the following resources:
+| Token | Value | Classes |
+| --- | --- | --- |
+| Bordo | `#6C151E` | `bg-bordo`, `text-bordo`, `border-bordo` |
+| Forest | `#0F3D3A` | `bg-forest`, `text-forest`, ... |
+| Cream | `#F5DABF` | `bg-cream`, `text-cream`, ... |
+| Section spacing | `6rem` | `py-section`, `.section` |
+| Gutter | `1.5rem` | `px-gutter` |
+| Nav height | `4.5rem` | `h-nav`, `pt-nav` |
+| Page width | `72rem` | `max-w-page`, `.container-page` |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Reusable utilities: `.section`, `.container-page`, `.eyebrow`, `.glass-dark`, `.glass-light`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Updating content
 
-## Deploy on Vercel
+- **Socials and WhatsApp number:** `data/site.ts`. The social URLs are placeholders (`TODO`) until the real profiles are provided.
+- **Projects:** add an entry to `data/projects.ts` and drop the image in `public/`.
+- **Skills and tools:** `data/site.ts`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Animation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Scroll animations are driven by GSAP ScrollTrigger. Add `data-reveal` to any element inside a section that calls `useReveal(ref)` and it fades up on entry. Animations are disabled for visitors who prefer reduced motion.

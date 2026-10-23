@@ -6,18 +6,19 @@ import Hero from "@/components/sections/hero/Hero";
 import Skills from "@/components/sections/skills/Skills";
 import Works from "@/components/sections/works/Works";
 
-const page = () => {
+export default function Page() {
   return (
-    <div>
+    <>
       <Navbar />
-      <Hero />
-      <About />
-      <Works />
-      <Skills />
-      <Contact />
-      <Footer />
-    </div>
+      <main>
+        <Hero />
+        <About />
+        <Works />
+        <Skills />
+        <Contact>
+          <Footer />
+        </Contact>
+      </main>
+    </>
   );
 }
-
-export default page;
